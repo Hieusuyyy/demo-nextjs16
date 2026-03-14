@@ -9,9 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.1",
     "next": "16.1.6",
     "ogl": "^1.0.11",
+    "posthog-js": "^1.360.1",
+    "posthog-node": "^5.21.2",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
