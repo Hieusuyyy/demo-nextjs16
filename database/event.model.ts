@@ -84,6 +84,7 @@ EventSchema.pre("save", function () {
 
     this.time = `${String(hours).padStart(2, "0")}:${minutes}`;
   }
+
 });
 
 // Prevent model re-registration errors during Next.js hot-reloads
