@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     if(!file) return NextResponse.json({ message: "No file uploaded" }, { status: 400 });
 
-    const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await file.arrayBuffer(); // Convert File to ArrayBuffer
     const buffer = Buffer.from(arrayBuffer);
 
     // Upload to Cloudinary
@@ -69,3 +69,4 @@ export async function GET() {
   }
 }
 
+//
