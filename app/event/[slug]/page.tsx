@@ -1,7 +1,7 @@
 import React from 'react'
 import {notFound} from "next/navigation";
 import Image from "next/image";
-import {eventNextPlugins} from "next/dist/telemetry/events";
+import {BookEvent} from "@/components/BookEvent";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -17,8 +17,8 @@ const EventAgenda = ({agendaItems} : {agendaItems: string[]}) => (
     <div className={"agenda"}>
       <h2>Agenda</h2>
       <ul>
-        {agendaItems.map((item) => (
-          <li key={item}>{item}</li>
+        {agendaItems.map((item, index) => (
+          <li key={`${item} - ${index}`}>{item}</li>
         ))}
       </ul>
     </div>
@@ -27,19 +27,26 @@ const EventAgenda = ({agendaItems} : {agendaItems: string[]}) => (
 
 const EventTags = ({tags} : ({tags: string[]})) => (
   <div className={"flex flex-row gap-1.5 flex-wrap"}>
-    {tags.map((tag) => (
-      <div className={"pill"} key={tag}>{tag}</div> 
+    {tags.map((tag, index) => (
+      <span key={`${tag} - ${index}`} className={"pill"}>{tag}</span>
       ))}
   </div>
 )
 
+const bookings = 10;
+
 const EventDetail = async ({params} : {params: Promise<{slug: string}>}) => {
   const {slug} = await params;
   const req = await fetch(`${BASE_URL}/api/events/${slug}`);
+  
+  if (!req.ok) {
+    if (req.status === 404) return notFound();
+    throw new Error(`Failed to fetch event: ${req.status}`);
+  }
+  
   const {event} = await req.json();
 
-  if(!event) return notFound();
-  return (
+  if(!event) return notFound();  return (
     <section id={"event"}>
       <div className={"header"}>
         <h1>{event.title}</h1>
@@ -55,12 +62,11 @@ const EventDetail = async ({params} : {params: Promise<{slug: string}>}) => {
           </section>
           <section className={"flex-col-gap-2"}>
             <h2>Event Details</h2>
-            <EventDetailItem icon={"/icons/calendar.svg"} alt={"calendar"} label={event.date} />
-            <EventDetailItem icon={"/icons/clock.svg"} alt={"calendar"} label={event.time} />
-            <EventDetailItem icon={"/icons/pin.svg"} alt={"calendar"} label={event.location} />
-            <EventDetailItem icon={"/icons/mode.svg"} alt={"calendar"} label={event.mode} />
-            <EventDetailItem icon={"/icons/audience.svg"} alt={"calendar"} label={event.audience} />
-          </section>
+            <EventDetailItem icon={"/icons/calendar.svg"} alt={"date"} label={event.date} />
+            <EventDetailItem icon={"/icons/clock.svg"} alt={"time"} label={event.time} />
+            <EventDetailItem icon={"/icons/pin.svg"} alt={"location"} label={event.location} />
+            <EventDetailItem icon={"/icons/mode.svg"} alt={"mode"} label={event.mode} />
+            <EventDetailItem icon={"/icons/audience.svg"} alt={"audience"} label={event.audience} />          </section>
           
           <EventAgenda agendaItems={event.agenda} />
 
@@ -73,7 +79,19 @@ const EventDetail = async ({params} : {params: Promise<{slug: string}>}) => {
         </div>
         {/*  Right side content*/}
         <aside className={"booking"} >
-          <p className={"text-lg font-semibold"}>Book Event</p>
+          <div className={"signup-card"}>
+            <h2>Signup for this event</h2>
+            {bookings > 0 ? (
+              <p className={"text-sm"}>
+                Join {bookings} other developers who are attending this event.
+              </p>
+            ) : (
+              <p className={"text-sm"}>
+                Be the first to know when {bookings} other developers are joining this event.
+              </p>
+            )}
+            <BookEvent />
+          </div>
         </aside>
       </div>
 

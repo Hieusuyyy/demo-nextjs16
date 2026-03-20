@@ -25,8 +25,7 @@ const EventCard = ({ title, image, slug, time, location, date} : Props) => {
 
   return (
     <Link href={`/event/${slug}`} id={"event-card"} onClick={handleClick}>
-      <Image src={image} alt={"image"} width={450} height={250} className={"poster"}/>
-      <div className={"flex flex-row gap-2 mt-2"}>
+      <Image src={image} alt={title} width={450} height={250} className={"poster"}/>      <div className={"flex flex-row gap-2 mt-2"}>
         <Image src={"/icons/pin.svg"} alt={"location"} width={16} height={16}/>
         <p className={"text-sm"}>{location}</p>
       </div>

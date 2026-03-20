@@ -48,7 +48,12 @@ export async function connectToDatabase(): Promise<Mongoose> {
   }
 
   // Await the connection and store it in the cache
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    // Clear the cached promise so subsequent calls can retry
+    cached.promise = null;
+    throw error;
+  }
 
-  return cached.conn;
-}
+  return cached.conn;}

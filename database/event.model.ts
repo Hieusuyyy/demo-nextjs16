@@ -43,14 +43,15 @@ const EventSchema = new Schema<IEvent>(
 EventSchema.pre("save", function () {
   // Regenerate slug only when the title has changed (or on first save)
   if (this.isModified("title")) {
-    this.slug = this.title
+    const baseSlug = this.title
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, "")   // Strip non-alphanumeric characters
       .replace(/[\s_]+/g, "-")    // Replace whitespace / underscores with hyphens
       .replace(/^-+|-+$/g, "");   // Remove leading and trailing hyphens
+    // Add short unique suffix to prevent collisions
+    this.slug = `${baseSlug}-${Date.now().toString(36).slice(-4)}`;
   }
-
   // Normalize date to ISO 8601 date string (YYYY-MM-DD)
   if (this.isModified("date")) {
     const parsed = new Date(this.date);
@@ -71,18 +72,18 @@ EventSchema.pre("save", function () {
     }
 
     let hours = parseInt(match[1], 10);
-    const minutes = match[2];
+    const minutes = parseInt(match[2], 10);
     const meridiem = match[3]?.toUpperCase();
 
     // Convert 12-hour clock to 24-hour clock
     if (meridiem === "AM" && hours === 12) hours = 0;
     if (meridiem === "PM" && hours !== 12) hours += 12;
 
-    if (hours < 0 || hours > 23) {
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
       throw new Error(`Invalid time value: "${this.time}"`);
     }
 
-    this.time = `${String(hours).padStart(2, "0")}:${minutes}`;
+    this.time = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
   }
 
 });

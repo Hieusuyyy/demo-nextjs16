@@ -7,8 +7,22 @@ import {IEvent} from "@/database/event.model";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Page = async () => {
-  const res = await fetch(`${BASE_URL}/api/events`);
-  const {events} = await res.json();
+  let events: IEvent[] = [];
+  
+  try {
+    if (!BASE_URL) {
+      console.error("NEXT_PUBLIC_BASE_URL is not defined");
+    } else {
+      const res = await fetch(`${BASE_URL}/api/events`);
+      if (res.ok) {
+        const data = await res.json();
+        events = data.events ?? [];
+      }
+    }
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+  }
+
   return (
       <section>
         <h1 className={"text-center"}>Hello World <br/> Event you can't miss</h1>

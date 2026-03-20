@@ -62,11 +62,13 @@ export async function GET() {
     const events = await Event.find().sort({ createdAt: -1 });
     return NextResponse.json({message: "Events fetched successfully", events: events}, {status: 200});
   } catch (e) {
+    console.error(e);
     return NextResponse.json({
       message: "Failed to fetch events",
-      error: e,
     }, {status: 500})
   }
 }
+
+
 
 //

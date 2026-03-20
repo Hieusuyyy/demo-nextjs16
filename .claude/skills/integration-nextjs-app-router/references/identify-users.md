@@ -10,14 +10,7 @@ To link events to specific users, call `identify`:
 
 PostHog AI
 
-### Web
-
-```javascript
-posthog.identify(
-  'distinct_id',  // Replace 'distinct_id' with your user's unique identifier
-  { email: 'max@hedgehogmail.com', name: 'Max Hedgehog' } // optional: set additional person properties
-);
-```
+## Web
 
 ### Android
 

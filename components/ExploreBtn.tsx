@@ -10,13 +10,15 @@ const ExploreBtn = () => {
   };
 
   return (
-    <button type={"button"} id={"explore-btn"} className={"mt-7 mx-auto"} onClick={handleClick}>
-      <a href={"#events"}>
-        Explore Events
-        <Image src={"/icons/arrow-down.svg"} alt={"arrow-down"} width={24} height={24} className={"ml-2"}/>
-      </a>
-    </button>
-  )
+    <a 
+      href={"#events"} 
+      id={"explore-btn"} 
+      className={"mt-7 mx-auto"} 
+      onClick={handleClick}
+    >
+      Explore Events
+      <Image src={"/icons/arrow-down.svg"} alt={"arrow-down"} width={24} height={24} className={"ml-2"}/>
+    </a>  )
 }
 
 export default ExploreBtn
