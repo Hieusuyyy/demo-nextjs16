@@ -2,6 +2,8 @@ import React from 'react'
 import {notFound} from "next/navigation";
 import Image from "next/image";
 import {BookEvent} from "@/components/BookEvent";
+import {getSimilarEventsBySlugs, SimilarEvent} from "@/lib/actions/event.action";
+import EventCard from "@/components/EventCard";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -33,12 +35,16 @@ const EventTags = ({tags} : ({tags: string[]})) => (
   </div>
 )
 
-const bookings = 10;
+
 
 const EventDetail = async ({params} : {params: Promise<{slug: string}>}) => {
   const {slug} = await params;
   const req = await fetch(`${BASE_URL}/api/events/${slug}`);
-  
+
+  const bookings = 10;
+
+  const similarEvents: SimilarEvent[] = await getSimilarEventsBySlugs(slug);
+
   if (!req.ok) {
     if (req.status === 404) return notFound();
     throw new Error(`Failed to fetch event: ${req.status}`);
@@ -95,6 +101,15 @@ const EventDetail = async ({params} : {params: Promise<{slug: string}>}) => {
         </aside>
       </div>
 
+      <div className={"flex w-full flex-col gap-4 pt-20"}>
+        <h2>Similar Events</h2>
+        <div className={"events"}>
+          {similarEvents.length > 0 && similarEvents.map((similarEvent: SimilarEvent) => (
+            <EventCard key={similarEvent.title} {...similarEvent}
+            />
+          ))}
+        </div>
+      </div>
     </section>
   )
 }

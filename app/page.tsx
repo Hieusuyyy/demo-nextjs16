@@ -1,13 +1,24 @@
 import React from 'react'
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
-import {events} from "@/lib/constants";
-import {IEvent} from "@/database/event.model";
+import {cacheLife} from "next/cache";
+
+type EventListItem = {
+  id: string;
+  title: string;
+  image: string;
+  location: string;
+  date: string;
+  time: string;
+  slug: string;
+};
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Page = async () => {
-  let events: IEvent[] = [];
+  'use cache';
+  cacheLife('hours')
+  let events: EventListItem[] = [];
   
   try {
     if (!BASE_URL) {
@@ -34,9 +45,16 @@ const Page = async () => {
           <h3>Featured Events</h3>
 
           <ul className={"events list-none"}>
-            {events && events.length > 0 && events.map((event : IEvent) => (
-              <li key={event.title}>
-                <EventCard {...event} />
+            {events && events.length > 0 && events.map((event: EventListItem) => (
+              <li key={event.id}>
+                <EventCard
+                  title={event.title}
+                  image={event.image}
+                  location={event.location}
+                  date={event.date}
+                  time={event.time}
+                  slug={event.slug}
+                />
               </li>
             ))}
           </ul>

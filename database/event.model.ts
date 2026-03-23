@@ -1,6 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface IEvent extends Document {
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -21,6 +22,7 @@ export interface IEvent extends Document {
 
 const EventSchema = new Schema<IEvent>(
   {
+    id:          { type: String, required: true, unique: true },
     title:       { type: String, required: true, trim: true },
     // Slug is auto-generated from title; unique index enforces no duplicates
     slug:        { type: String, unique: true },
